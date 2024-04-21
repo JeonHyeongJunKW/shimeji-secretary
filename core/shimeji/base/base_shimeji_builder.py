@@ -1,7 +1,7 @@
 # Copyright 2024 hd company
 # Authors: Hyeongjun Jeon
 
-from core.shimeji.base.base_shimeji_entity import BaseEntityProperty, BaseShimejiEntity
+from core.shimeji.base.base_shimeji_entity import BaseShimejiEntity
 
 
 class BaseShimejiBuilder:

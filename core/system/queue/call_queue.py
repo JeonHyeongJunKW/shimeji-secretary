@@ -5,6 +5,7 @@ from threading import Condition
 
 from core.system.queue.base_queue import BaseQueue
 
+
 class CallQueue(BaseQueue):
 
     def __init__(self, size) -> None:
@@ -26,16 +27,15 @@ class CallQueue(BaseQueue):
 
 if __name__ == '__main__':
     import threading
-    import time
 
-    def add_data(queue : CallQueue):
-        i : int = 0
+    def add_data(queue: CallQueue):
+        i: int = 0
         while i <= 50:
             print('Success to add', i)
             queue.add_queue(i)
             i += 1
 
-    def read_data(queue : CallQueue):
+    def read_data(queue: CallQueue):
         call = queue.get_queue_call()
         data = 0
         while data < 50:

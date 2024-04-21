@@ -1,12 +1,11 @@
 # Copyright 2024 hd company
 # Authors: Hyeongjun Jeon
 
-import copy
 import threading
 
 from core.drawer.main_drawer import MainDrawer
 from core.shimeji.base.base_shimeji_builder import BaseShimejiBuilder
-from core.shimeji.base.base_shimeji_entity import BaseEntityProperty, BaseShimejiEntity
+from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
 
 from core.system.queue.call_queue import CallQueue
 

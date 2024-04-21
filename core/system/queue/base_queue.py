@@ -8,7 +8,7 @@ class BaseQueue:
 
     def __init__(self, size) -> None:
         self._size = size
-        self._queue : list = []
+        self._queue: list = []
         self._queue_lock = threading.Lock()
 
     def add_queue(self, data) -> None:

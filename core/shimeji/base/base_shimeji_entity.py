@@ -24,7 +24,7 @@ class BaseEntityProperty:
     def get(self, name: str):
         if name in self._entity_properties:
             return self._entity_properties[name]
-        else :
+        else:
             return None
 
     def check_validation(self) -> bool:
@@ -50,7 +50,7 @@ class BaseShimejiEntity:
 
     def __init__(self, entity_property: BaseEntityProperty):
         self._interface = QWidget()
-        resource_path = get_resource_path("shimeji/base.ui")
+        resource_path = get_resource_path('shimeji/base.ui')
         uic.loadUi(resource_path, self._interface)
         self._name = entity_property.get('name')
         self._animation_type = entity_property.get('animation_type')
