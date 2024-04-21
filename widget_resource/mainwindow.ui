@@ -170,7 +170,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="addition_editbox">
+   <widget class="QLineEdit" name="addition_edit_box">
     <property name="geometry">
      <rect>
       <x>90</x>

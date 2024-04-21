@@ -5,7 +5,7 @@
 import sys
 
 # from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QComboBox, QPushButton
 from PyQt5 import uic
 
 from utility.monitor import get_monitor_info
@@ -38,15 +38,25 @@ class MainDrawer:
             self.__window_size['width'],
             self.__window_size['height'])
 
-        self.__main_window.addition_button.clicked.connect(self.add_shimeji)
+        self.__addition_button : QPushButton = self.__main_window.addition_button
+        self.__addition_edit_box : QLineEdit = self.__main_window.addition_edit_box
+        self.__property_combobox : QComboBox = self.__main_window.property_combobox
+        self.__property_combobox.addItem("유동길")
+        self.__property_combobox.addItem("default")
+        last_index = self.__property_combobox.count() - 1
+        self.__property_combobox.setCurrentIndex(last_index)
+
+        self.__addition_button.clicked.connect(self.add_shimeji)
 
     def activate(self):
         self.__main_window.show()
         self.__app.exec_()
 
     def add_shimeji(self):
-        edit_box : QLineEdit = self.__main_window.addition_editbox
-        text = edit_box.text()
-        if len(text) != 0:
-            print(text)
-            edit_box.clear()
+        shimeji_name = self.__addition_edit_box.text()
+
+        is_valid : bool = len(shimeji_name) == 0
+        if not is_valid:
+            return
+        self.__addition_edit_box.clear()
+        target_property = self.__property_combobox.currentText()
