@@ -9,8 +9,8 @@ class BaseShimejiBuilder:
     def __init__(self):
         pass
 
-    def make_entity(self, entity_property: dict):
-        is_valid = BaseEntityProperty.check_validation(entity_property)  # builder duty
+    def make_entity(self, entity_property):
+        is_valid = entity_property.check_validation()  # builder duty
         if not is_valid:
             return None
 

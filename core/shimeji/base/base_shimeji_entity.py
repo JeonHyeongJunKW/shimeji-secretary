@@ -15,52 +15,58 @@ class BaseEntityProperty:
     STATIC = True
     DYNAMIC = False
 
-    def __init__(self):
-        self.entity_properties = []
-
-    def add(self, name: str, animation_type: bool = STATIC, target_monitor: int = 0):
-        self.entity_properties.append(
+    def __init__(self, name: str, animation_type: bool = STATIC, target_monitor: int = 0):
+        self._entity_properties = \
             {'name': name,
              'animation_type': animation_type,
-             'target_monitor': target_monitor})
+             'target_monitor': target_monitor}
 
-    @staticmethod
-    def check_validation(entity: dict) -> bool:
+    def get(self, name: str):
+        if name in self._entity_properties:
+            return self._entity_properties[name]
+        else :
+            return None
+
+    def check_validation(self) -> bool:
         monitor_info = get_monitor_info()
-        if 'name' not in entity:
-            print('no name in ', entity)
+        if 'name' not in self._entity_properties:
+            print('no name in ', self._entity_properties)
             return False
-        if 'animation_type' not in entity:
-            print('There is no animation type in {0}'.format(entity['name']))
+        name = self._entity_properties['name']
+        if 'animation_type' not in self._entity_properties:
+            print('There is no animation type in {0}'.format(name))
             return False
-        if 'target_monitor' not in entity:
-            print('There is no target monitor type in {0}'.format(entity['name']))
+        if 'target_monitor' not in self._entity_properties:
+            print('There is no target monitor type in {0}'.format(name))
             return False
-        if entity['target_monitor'] >= monitor_info['count']:
+        if self._entity_properties['target_monitor'] >= monitor_info['count']:
             print('Target monitor index {0} should be smaller than {1} in {2}'.format(
-                entity['target_monitor'], monitor_info['count'], entity['name']))
+                self._entity_properties['target_monitor'], monitor_info['count'], name))
             return False
         return True
 
 
 class BaseShimejiEntity:
 
-    def __init__(self, entity_property: dict):
+    def __init__(self, entity_property: BaseEntityProperty):
         self._interface = QWidget()
         resource_path = get_resource_path("shimeji/base.ui")
         uic.loadUi(resource_path, self._interface)
-        self._name = entity_property['name']
-        self._animation_type = entity_property['animation_type']
+        self._name = entity_property.get('name')
+        self._animation_type = entity_property.get('animation_type')
 
         self._monitor_info = get_monitor_info()
         self._target_monitor_lock = threading.Lock()
-        self._target_monitor = entity_property['target_monitor']
+        self._target_monitor = entity_property.get('target_monitor')
 
         self._position_lock = threading.Lock()
         self._position = {'x': -1, 'y': -1}
 
     def activate(self):
         self._interface.show()
+
+    def deactivate(self):
+        self._interface.close()
 
     def set_position(self, position: dict) -> bool:
         if 'x' not in position or 'y' not in position:
