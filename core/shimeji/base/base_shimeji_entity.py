@@ -3,11 +3,8 @@
 
 import threading
 
-from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
-
 from utility.monitor import get_monitor_info
-from widget_resource.path import get_resource_path
+from core.drawer.entity.shimeji_interface import ShimejiInterface
 
 
 class BaseEntityProperty:
@@ -15,10 +12,16 @@ class BaseEntityProperty:
     STATIC = True
     DYNAMIC = False
 
-    def __init__(self, name: str, animation_type: bool = STATIC, target_monitor: int = 0):
+    def __init__(
+            self,name: str,
+            interface: ShimejiInterface,
+            animation_type: bool = STATIC,
+            target_monitor: int = 0):
         self._entity_properties = \
             {'name': name,
+             'interface': interface,
              'animation_type': animation_type,
+             'target_monitor': target_monitor,
              'target_monitor': target_monitor}
 
     def get(self, name: str):
@@ -33,6 +36,9 @@ class BaseEntityProperty:
             print('no name in ', self._entity_properties)
             return False
         name = self._entity_properties['name']
+        if 'interface' not in self._entity_properties:
+            print('There is no shimeji interface in {0}'.format(name))
+            return False
         if 'animation_type' not in self._entity_properties:
             print('There is no animation type in {0}'.format(name))
             return False
@@ -49,11 +55,9 @@ class BaseEntityProperty:
 class BaseShimejiEntity:
 
     def __init__(self, entity_property: BaseEntityProperty):
-        self._interface = QWidget()
-        resource_path = get_resource_path('shimeji/base.ui')
-        uic.loadUi(resource_path, self._interface)
         self._name = entity_property.get('name')
         self._animation_type = entity_property.get('animation_type')
+        self._interface = entity_property.get('interface')
 
         self._monitor_info = get_monitor_info()
         self._target_monitor_lock = threading.Lock()

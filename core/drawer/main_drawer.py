@@ -4,6 +4,9 @@
 
 import sys
 
+from PyQt5.QtGui import QCloseEvent
+
+from core.drawer.entity.shimeji_interface import ShimejiInterface
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
 from core.system.queue.call_queue import CallQueue
 
@@ -13,22 +16,24 @@ from utility.monitor import get_monitor_info
 from widget_resource.path import get_resource_path
 
 
-class MainDrawer:
+class MainDrawer(QMainWindow):
 
     def __init__(self, shimeji_generation_queue: CallQueue):
-        DEFAULT = 'default'
-        self.shimeji_generation_queue = shimeji_generation_queue
         self.__app = QApplication(sys.argv)
-        self.__main_window = QMainWindow()
+        super().__init__()
         resource_path = get_resource_path('mainwindow.ui')
-        uic.loadUi(resource_path, self.__main_window)
+        uic.loadUi(resource_path, self)
 
         self.__monitor_info = get_monitor_info()
+
+        DEFAULT = 'default'
+        self.shimeji_generation_queue = shimeji_generation_queue
+
         self.primary_monitor_index = self.__monitor_info['primary_index']
         monitor_width = self.__monitor_info['size'][self.primary_monitor_index]['width']
         x_offset = self.__monitor_info['size'][self.primary_monitor_index]['x_offset']
         y_offset = self.__monitor_info['size'][self.primary_monitor_index]['y_offset']
-        origin_geometry = self.__main_window.geometry()
+        origin_geometry = self.geometry()
         self.__window_size = \
             {'left': 0,
              'top': 0,
@@ -37,16 +42,16 @@ class MainDrawer:
         self.__window_size['left'] = monitor_width + x_offset - self.__window_size['width']
         self.__window_size['top'] = y_offset
 
-        self.__main_window.setGeometry(
+        self.setGeometry(
             self.__window_size['left'],
             self.__window_size['top'],
             self.__window_size['width'],
             self.__window_size['height'])
 
-        self.__addition_button: QPushButton = self.__main_window.addition_button
-        self.__addition_edit_box: QLineEdit = self.__main_window.addition_edit_box
+        self.__addition_button: QPushButton = self.addition_button
+        self.__addition_edit_box: QLineEdit = self.addition_edit_box
 
-        self.__property_combobox: QComboBox = self.__main_window.property_combobox
+        self.__property_combobox: QComboBox = self.property_combobox
         self.__property_combobox.addItem('유동길', BaseEntityProperty)
         self.__property_combobox.addItem(DEFAULT, BaseEntityProperty)
 
@@ -55,8 +60,10 @@ class MainDrawer:
 
         self.__addition_button.clicked.connect(self.__add_shimeji)
 
+        self.__shimeji_interface_set = []
+
     def activate(self):
-        self.__main_window.show()
+        self.show()
         self.__app.exec_()
 
     def __add_shimeji(self):
@@ -69,6 +76,17 @@ class MainDrawer:
         target_property = self.__property_combobox.currentData()
 
         if target_property == BaseEntityProperty:
+            resource_path = get_resource_path('shimeji/base.ui')
+            self.__shimeji_interface_set.append(ShimejiInterface(resource_path=resource_path))
             entity_property = \
-                BaseEntityProperty(shimeji_name, target_monitor=self.primary_monitor_index)
+                BaseEntityProperty(
+                    shimeji_name,
+                    interface=self.__shimeji_interface_set[-1],
+                    target_monitor=self.primary_monitor_index)
             self.shimeji_generation_queue.add_queue(entity_property)
+
+    def closeEvent(self, event: QCloseEvent):
+        for shimeji_interface in self.__shimeji_interface_set:
+            target_interface: ShimejiInterface = shimeji_interface
+            target_interface.close()
+        event.accept()
