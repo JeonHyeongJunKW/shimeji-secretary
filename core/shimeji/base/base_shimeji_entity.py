@@ -13,16 +13,20 @@ class BaseEntityProperty:
     DYNAMIC = False
 
     def __init__(
-            self,name: str,
+            self,
+            name: str,
             interface: ShimejiInterface,
             animation_type: bool = STATIC,
             target_monitor: int = 0):
+
+        interface.set_name(name)
         self._entity_properties = \
             {'name': name,
              'interface': interface,
              'animation_type': animation_type,
              'target_monitor': target_monitor,
              'target_monitor': target_monitor}
+
 
     def get(self, name: str):
         if name in self._entity_properties:

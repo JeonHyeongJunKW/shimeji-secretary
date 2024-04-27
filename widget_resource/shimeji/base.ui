@@ -6,24 +6,58 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>112</width>
-    <height>110</height>
+    <width>110</width>
+    <height>150</height>
    </rect>
+  </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
   </property>
   <widget class="QLabel" name="image_label">
    <property name="geometry">
     <rect>
      <x>0</x>
+     <y>40</y>
+     <width>110</width>
+     <height>110</height>
+    </rect>
+   </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>image</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="textInteractionFlags">
+    <set>Qt::LinksAccessibleByMouse</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="name_label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
      <y>0</y>
-     <width>111</width>
-     <height>111</height>
+     <width>110</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>name</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

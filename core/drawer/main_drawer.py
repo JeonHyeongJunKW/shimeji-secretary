@@ -76,8 +76,11 @@ class MainDrawer(QMainWindow):
         target_property = self.__property_combobox.currentData()
 
         if target_property == BaseEntityProperty:
-            resource_path = get_resource_path('shimeji/base.ui')
-            self.__shimeji_interface_set.append(ShimejiInterface(resource_path=resource_path))
+            resource_path = 'shimeji/base.ui'
+            state_directory = 'shimeji/emoji_state'
+            shimeji_interface = ShimejiInterface(resource_path, state_directory)
+            self.__shimeji_interface_set.append(shimeji_interface)
+            self.__shimeji_interface_set[-1]
             entity_property = \
                 BaseEntityProperty(
                     shimeji_name,

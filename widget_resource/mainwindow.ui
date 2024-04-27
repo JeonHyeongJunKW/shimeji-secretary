@@ -180,7 +180,7 @@
      </rect>
     </property>
     <property name="text">
-     <string/>
+     <string>test_name</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

@@ -12,17 +12,15 @@ class BaseQueue:
         self._queue_lock = threading.Lock()
 
     def add_queue(self, data) -> None:
-        self._queue_lock.acquire()
-        if self._size > len(self._queue):
-            self._queue.append(data)
-        self._queue_lock.release()
+        with self._queue_lock:
+            if self._size > len(self._queue):
+                self._queue.append(data)
 
     def pop_queue(self):
         output_data = None
-        self._queue_lock.acquire()
-        if 0 < len(self._queue):
-            output_data = self._queue.pop(0)
-        self._queue_lock.release()
+        with self._queue_lock:
+            if 0 < len(self._queue):
+                output_data = self._queue.pop(0)
         return output_data
 
 
