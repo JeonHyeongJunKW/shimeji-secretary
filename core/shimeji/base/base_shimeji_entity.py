@@ -4,7 +4,6 @@
 import threading
 
 from utility.monitor import get_monitor_info
-from core.drawer.entity.shimeji_interface import ShimejiInterface
 
 
 class BaseEntityProperty:
@@ -12,7 +11,7 @@ class BaseEntityProperty:
     STATIC = True
     DYNAMIC = False
 
-    def __init__(self, name, interface, animation_type = STATIC, target_monitor = 0):
+    def __init__(self, name, interface, animation_type=STATIC, target_monitor=0):
         self._entity_properties = \
             {'name': name,
              'interface': interface,

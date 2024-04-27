@@ -4,13 +4,12 @@
 
 import sys
 
-from PyQt5.QtGui import QCloseEvent
-
 from core.drawer.entity.shimeji_interface import ShimejiInterface
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
 from core.system.queue.call_queue import CallQueue
 
 from PyQt5 import uic
+from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QApplication, QComboBox, QLineEdit, QMainWindow, QPushButton
 from utility.monitor import get_monitor_info
 from widget_resource.path import get_resource_path

@@ -3,9 +3,6 @@
 
 import threading
 from typing import Callable
-from PyQt5 import uic, QtGui
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel, QWidget
 
 
 class ResourceServer:
@@ -27,13 +24,12 @@ class ResourceServer:
 
         if is_exist:
             return True, resource_data[resource_name]
-        else :
+        else:
             return False, None
 
     def check_resource(resource_name: str):
         with resource_lock:
             if resource_name in resource_data:
                 return True
-            else :
+            else:
                 return False
-
