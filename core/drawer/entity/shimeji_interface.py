@@ -3,13 +3,15 @@
 
 import os
 
-from PyQt5 import uic, QtGui
+from core.resource_handle.resource_interface import get_shimeji_state, load_static_shimeji_state
+from core.resource_handle.state_type import SHIMEJI_ANGRY, SHIMEJI_DEFAULT
+from core.resource_handle.state_type import SHIMEJI_DISAPPOINTED, SHIMEJI_SMILE
+
+from PyQt5 import QtGui, uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGraphicsOpacityEffect, QLabel, QWidget
-
-from core.resource_handle.state_type import *
-from core.resource_handle.resource_interface import load_static_shimeji_state, get_shimeji_state
 from widget_resource.path import get_resource_path
+
 
 class ShimejiInterface(QWidget):
 
@@ -26,7 +28,7 @@ class ShimejiInterface(QWidget):
             'color: black;'
             'background-color: #FA8072')
 
-        self.__current_state: str = ""
+        self.__current_state: str = ''
         self.__state_type = []
         self.__state_namespace = dir_path.split('/')[-1] + '_'
 
@@ -76,4 +78,3 @@ class ShimejiInterface(QWidget):
         self.offset = None
         super().mouseReleaseEvent(event)
         self.change_shimeji_state(SHIMEJI_SMILE)
-
