@@ -12,21 +12,12 @@ class BaseEntityProperty:
     STATIC = True
     DYNAMIC = False
 
-    def __init__(
-            self,
-            name: str,
-            interface: ShimejiInterface,
-            animation_type: bool = STATIC,
-            target_monitor: int = 0):
-
-        interface.set_name(name)
+    def __init__(self, name, interface, animation_type = STATIC, target_monitor = 0):
         self._entity_properties = \
             {'name': name,
              'interface': interface,
              'animation_type': animation_type,
-             'target_monitor': target_monitor,
              'target_monitor': target_monitor}
-
 
     def get(self, name: str):
         if name in self._entity_properties:
@@ -62,6 +53,7 @@ class BaseShimejiEntity:
         self._name = entity_property.get('name')
         self._animation_type = entity_property.get('animation_type')
         self._interface = entity_property.get('interface')
+        self._interface.set_name(self._name)
 
         self._monitor_info = get_monitor_info()
         self._target_monitor_lock = threading.Lock()
@@ -79,16 +71,14 @@ class BaseShimejiEntity:
     def set_position(self, position: dict) -> bool:
         if 'x' not in position or 'y' not in position:
             return False
-        self._position_lock.acquire()
-        self._position['x'] = position['x']
-        self._position['y'] = position['y']
-        self._position_lock.release()
+        with self._position_lock:
+            self._position['x'] = position['x']
+            self._position['y'] = position['y']
         return True
 
     def set_monitor(self, index: int) -> bool:
         if index >= self._monitor_info['count']:
             return False
-        self._target_monitor_lock.acquire()
-        self._target_monitor = index
-        self._target_monitor_lock.release()
+        with self._target_monitor_lock:
+            self._target_monitor = index
         return True
