@@ -6,7 +6,6 @@ import threading
 from core.drawer.main_drawer import MainDrawer
 from core.shimeji.base.base_shimeji_builder import BaseShimejiBuilder
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
-
 from core.system.queue.call_queue import CallQueue
 
 
@@ -26,6 +25,8 @@ class ShimejiSecretarySystem:
         self.__main_drawer.activate()
         self.main_window_closed = True
         self.shimeji_generation_thread.join()
+        for shimeji in self.shimeji_set:
+            shimeji.deactivate()
         self.shimeji_set.clear()
 
     def make_shimeji(self):

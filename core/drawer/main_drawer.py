@@ -90,5 +90,5 @@ class MainDrawer(QMainWindow):
     def closeEvent(self, event: QCloseEvent):
         for shimeji_interface in self.__shimeji_interface_set:
             target_interface: ShimejiInterface = shimeji_interface
-            target_interface.close()
+            target_interface.hide()
         event.accept()
