@@ -47,9 +47,9 @@ class RandomShimejiEntity(BaseShimejiEntity):
         self.__is_mouse_handling = False
 
     def activate(self):
+        super().activate()
         self._random_move_thread = threading.Thread(target=self._move_random)
         self._random_move_thread.start()
-        super().activate()
 
     def _move_random(self):
         move_speed = 1  # pixel / second
@@ -60,13 +60,15 @@ class RandomShimejiEntity(BaseShimejiEntity):
         target_x = self._init_pose.x()
         normal_y = self._init_pose.y()
         while True:
-            if self._is_deactivated:
-                break
 
             time.sleep(move_timing)
 
+            if self._interface.isHidden():
+                break
+
             if self.__is_mouse_handling:
                 continue
+
             current_time = time.time()
 
             current_position = copy.deepcopy(self._position)
@@ -115,7 +117,3 @@ class RandomShimejiEntity(BaseShimejiEntity):
 
     def get_random_x(self):
         return int(random.random() * self._monitor_roi.width() + self._monitor_roi.x())
-
-    def deactivate(self):
-        super().deactivate()
-        self._random_move_thread.join()

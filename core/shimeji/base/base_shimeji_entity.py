@@ -81,8 +81,6 @@ class BaseShimejiEntity:
         self._mouse_click_point = \
             QPoint(self._interface.size().width() / 2, self._interface.size().height() / 2)
 
-        self._is_deactivated = False
-
         self.__current_state: str = ''
 
     def _init_shimeji(self):
@@ -140,7 +138,7 @@ class BaseShimejiEntity:
             with input_call:
                 input_call.wait(timeout=0.1)
 
-            if self._is_deactivated:
+            if self._interface.isHidden():
                 break
 
             current_queue_size = queue.get_queue_size()
@@ -151,12 +149,7 @@ class BaseShimejiEntity:
 
     def activate(self):
         self._init_shimeji()
+        self._interface.show()
         self._reaction_thread = threading.Thread(target=self.__react_to_input)
         self._reaction_thread.start()
-        self._interface.show()
         self._set_position(self._init_pose)
-
-    def deactivate(self):
-        self._interface.hide()
-        self._is_deactivated = True
-        self._reaction_thread.join()

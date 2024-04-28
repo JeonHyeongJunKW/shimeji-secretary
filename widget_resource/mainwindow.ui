@@ -50,7 +50,7 @@
      <string>추가하기</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="delete_button">
+   <widget class="QPushButton" name="removal_button">
     <property name="geometry">
      <rect>
       <x>303</x>

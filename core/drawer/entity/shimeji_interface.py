@@ -45,6 +45,9 @@ class ShimejiInterface(QWidget):
     def set_name(self, name: str):
         self.__name_label.setText(name)
 
+    def get_name(self):
+        return self.__name_label.text()
+
     def get_interface_queue(self):
         return self.__interface_queue
 
