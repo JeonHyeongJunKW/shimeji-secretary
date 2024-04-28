@@ -9,19 +9,19 @@ from core.resource_handle.resource_interface import get_shimeji_state, load_stat
 from core.resource_handle.state_type import SHIMEJI_ANGRY, SHIMEJI_DEFAULT
 from core.resource_handle.state_type import SHIMEJI_DISAPPOINTED, SHIMEJI_SMILE
 from core.system.queue.call_queue import CallQueue
-from utility.monitor import get_monitor_info
-
 from PyQt5 import QtGui
 from PyQt5.QtCore import QPoint, QRect
+from utility.monitor import get_monitor_info
 
 
 class BaseEntityProperty:
 
-    def __init__(self, name, interface, target_monitor=0):
+    def __init__(self, name, interface, target_monitor):
         self._entity_properties = \
             {'name': name,
              'interface': interface,
              'target_monitor': target_monitor}
+        self.property_type = 'base'
 
     def get(self, name: str):
         if name in self._entity_properties:
@@ -81,7 +81,7 @@ class BaseShimejiEntity:
         self._mouse_click_point = \
             QPoint(self._interface.size().width() / 2, self._interface.size().height() / 2)
 
-        self.__is_deactivated = False
+        self._is_deactivated = False
 
         self.__current_state: str = ''
 
@@ -140,7 +140,7 @@ class BaseShimejiEntity:
             with input_call:
                 input_call.wait(timeout=0.1)
 
-            if self.__is_deactivated:
+            if self._is_deactivated:
                 break
 
             current_queue_size = queue.get_queue_size()
@@ -158,5 +158,5 @@ class BaseShimejiEntity:
 
     def deactivate(self):
         self._interface.hide()
-        self.__is_deactivated = True
+        self._is_deactivated = True
         self._reaction_thread.join()

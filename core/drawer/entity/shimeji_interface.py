@@ -17,7 +17,7 @@ class ShimejiInterface(QWidget):
         super().__init__()
         uic.loadUi(get_resource_path(resource_path), self)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         opacity_effect = QGraphicsOpacityEffect(self)
         opacity_effect.setOpacity(1.0)
         self.setGraphicsEffect(opacity_effect)

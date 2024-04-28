@@ -6,6 +6,7 @@ import sys
 
 from core.drawer.entity.shimeji_interface import ShimejiInterface
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
+from core.shimeji.random.random_shimeji_entity import RandomEntityProperty
 from core.system.queue.call_queue import CallQueue
 
 from PyQt5 import uic
@@ -25,6 +26,7 @@ class MainDrawer(QMainWindow):
 
         self.__monitor_info = get_monitor_info()
 
+        RANDOM = 'random'
         DEFAULT = 'default'
         self.shimeji_generation_queue = shimeji_generation_queue
 
@@ -51,7 +53,7 @@ class MainDrawer(QMainWindow):
         self.__addition_edit_box: QLineEdit = self.addition_edit_box
 
         self.__property_combobox: QComboBox = self.property_combobox
-        self.__property_combobox.addItem('유동길', BaseEntityProperty)
+        self.__property_combobox.addItem(RANDOM, RandomEntityProperty)
         self.__property_combobox.addItem(DEFAULT, BaseEntityProperty)
 
         default_index = self.__property_combobox.findText(DEFAULT)
@@ -73,19 +75,27 @@ class MainDrawer(QMainWindow):
             return
         self.__addition_edit_box.clear()
         target_property = self.__property_combobox.currentData()
+        resource_path = 'shimeji/base.ui'
+        state_directory = 'shimeji/emoji_state'
+        # apply resource variation
+        shimeji_interface = ShimejiInterface(resource_path, state_directory)
+        self.__shimeji_interface_set.append(shimeji_interface)
 
-        if target_property == BaseEntityProperty:
-            resource_path = 'shimeji/base.ui'
-            state_directory = 'shimeji/emoji_state'
-            shimeji_interface = ShimejiInterface(resource_path, state_directory)
-            self.__shimeji_interface_set.append(shimeji_interface)
-            self.__shimeji_interface_set[-1]
+        entity_property = None
+        if target_property == RandomEntityProperty:
             entity_property = \
-                BaseEntityProperty(
-                    shimeji_name,
+                RandomEntityProperty(
+                    use_random_seed=False,
+                    name=shimeji_name,
                     interface=self.__shimeji_interface_set[-1],
                     target_monitor=self.primary_monitor_index)
-            self.shimeji_generation_queue.add_queue(entity_property)
+        else:
+            entity_property = \
+                BaseEntityProperty(
+                    name=shimeji_name,
+                    interface=self.__shimeji_interface_set[-1],
+                    target_monitor=self.primary_monitor_index)
+        self.shimeji_generation_queue.add_queue(entity_property)
 
     def closeEvent(self, event: QCloseEvent):
         for shimeji_interface in self.__shimeji_interface_set:

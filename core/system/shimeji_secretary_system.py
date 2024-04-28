@@ -5,7 +5,7 @@ import threading
 
 from core.drawer.main_drawer import MainDrawer
 from core.shimeji.base.base_shimeji_builder import BaseShimejiBuilder
-from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
+from core.shimeji.random.random_shimeji_builder import RandomShimejiBuilder
 from core.system.queue.call_queue import CallQueue
 
 
@@ -13,7 +13,6 @@ class ShimejiSecretarySystem:
 
     def __init__(self):
         print('=========시메지 월드=========')
-        self.__base_builder = BaseShimejiBuilder()
         self.shimeji_generation_queue = CallQueue(size=10)
         self.shimeji_generation_thread = threading.Thread(target=self.make_shimeji)
         self.shimeji_generation_thread.start()
@@ -32,9 +31,11 @@ class ShimejiSecretarySystem:
     def make_shimeji(self):
         generation_call = self.shimeji_generation_queue.get_queue_call()
         queue = self.shimeji_generation_queue
+        base_builder = BaseShimejiBuilder()
+        random_builder = RandomShimejiBuilder()
         while True:
             with generation_call:
-                generation_call.wait(timeout=0.1)  # wait for check size
+                generation_call.wait(timeout=0.1)
 
             if self.main_window_closed:
                 break
@@ -43,10 +44,10 @@ class ShimejiSecretarySystem:
 
             for _ in range(current_queue_size):
                 shimeji_property = queue.pop_queue()
-                if type(shimeji_property) == BaseEntityProperty:
-                    entity = self.__base_builder.make_entity(shimeji_property)
+                if shimeji_property.property_type == 'random':
+                    entity = random_builder.make_entity(shimeji_property)
                 else:
-                    entity = self.__base_builder.make_entity(shimeji_property)
+                    entity = base_builder.make_entity(shimeji_property)
 
                 if entity is not None:
                     self.shimeji_set.append(entity)
