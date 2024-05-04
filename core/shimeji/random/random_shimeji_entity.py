@@ -20,16 +20,6 @@ class RandomEntityProperty(BaseEntityProperty):
         self._entity_properties['use_random_seed'] = use_random_seed
         self.property_type = 'random'
 
-    def check_validation(self) -> bool:
-        result = super().check_validation()
-        if not result:
-            return False
-        if 'use_random_seed' not in self._entity_properties:
-            entity_name = self._entity_properties['name']
-            print('There is no random seed option in {0}'.format(entity_name))
-            return False
-        return True
-
 
 class RandomShimejiEntity(BaseShimejiEntity):
 

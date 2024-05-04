@@ -2,7 +2,6 @@
 # Authors: Hyeongjun Jeon
 
 import copy
-import os
 import threading
 
 from core.drawer.entity.shimeji_interface import ShimejiInterface
@@ -13,7 +12,6 @@ from core.system.queue.call_queue import CallQueue
 from PyQt5 import QtGui
 from PyQt5.QtCore import QPoint, QRect
 from utility.monitor import get_monitor_info
-from widget_resource.path import get_resource_path
 
 
 class BaseEntityProperty:
@@ -30,29 +28,6 @@ class BaseEntityProperty:
             return self._entity_properties[name]
         else:
             return None
-
-    def check_validation(self) -> bool:
-        monitor_info = get_monitor_info()
-        if 'name' not in self._entity_properties:
-            print('no name in ', self._entity_properties)
-            return False
-        name = self._entity_properties['name']
-        if 'state_path' not in self._entity_properties:
-            print('There is no shimeji state_path in {0} property'.format(name))
-            return False
-        state_directory = self._entity_properties['state_path']
-        absolute_state_path = get_resource_path(state_directory)
-        if not os.path.isdir(absolute_state_path):
-            print('{0} does not exist'.format(state_directory))
-            return False
-        if 'target_monitor' not in self._entity_properties:
-            print('There is no target monitor type in {0} property'.format(name))
-            return False
-        if self._entity_properties['target_monitor'] >= monitor_info['count']:
-            print('Target monitor index {0} should be smaller than {1} in {2}'.format(
-                self._entity_properties['target_monitor'], monitor_info['count'], name))
-            return False
-        return True
 
 
 class BaseShimejiEntity:
