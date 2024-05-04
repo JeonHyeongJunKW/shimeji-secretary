@@ -12,10 +12,12 @@ from widget_resource.path import get_resource_path
 
 
 class ShimejiInterface(QWidget):
+    global RESOURCE_PATH
+    RESOURCE_PATH = get_resource_path('shimeji/base.ui')
 
-    def __init__(self, resource_path: str, dir_path: str):
+    def __init__(self, name, state_path: str):
         super().__init__()
-        uic.loadUi(get_resource_path(resource_path), self)
+        uic.loadUi(RESOURCE_PATH, self)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         opacity_effect = QGraphicsOpacityEffect(self)
@@ -23,6 +25,7 @@ class ShimejiInterface(QWidget):
         self.setGraphicsEffect(opacity_effect)
 
         self.__name_label: QLabel = self.name_label
+        self.__name_label.setText(name)
         self.state_interface: QLabel = self.image_label
 
         self.__name_label.setStyleSheet('color: black;''background-color: #FA8072')
@@ -30,9 +33,9 @@ class ShimejiInterface(QWidget):
         self.state_type = []
         self.unique_state_type = []
         self.state_files = []
-        self.state_namespace = dir_path.split('/')[-1] + '_'
+        self.state_namespace = state_path.split('/')[-1] + '_'
 
-        state_directory = get_resource_path(dir_path)
+        state_directory = get_resource_path(state_path)
         state_file_list: list = os.listdir(state_directory)
 
         for state_file_name in state_file_list:
@@ -41,12 +44,6 @@ class ShimejiInterface(QWidget):
             self.state_files.append(os.path.join(state_directory, state_file_name))
 
         self.__interface_queue: CallQueue = CallQueue(size=100)
-
-    def set_name(self, name: str):
-        self.__name_label.setText(name)
-
-    def get_name(self):
-        return self.__name_label.text()
 
     def get_interface_queue(self):
         return self.__interface_queue

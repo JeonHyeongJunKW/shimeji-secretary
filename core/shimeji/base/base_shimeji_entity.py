@@ -2,6 +2,7 @@
 # Authors: Hyeongjun Jeon
 
 import copy
+import os
 import threading
 
 from core.drawer.entity.shimeji_interface import ShimejiInterface
@@ -12,14 +13,15 @@ from core.system.queue.call_queue import CallQueue
 from PyQt5 import QtGui
 from PyQt5.QtCore import QPoint, QRect
 from utility.monitor import get_monitor_info
+from widget_resource.path import get_resource_path
 
 
 class BaseEntityProperty:
 
-    def __init__(self, name, interface, target_monitor):
+    def __init__(self, name, state_path, target_monitor):
         self._entity_properties = \
             {'name': name,
-             'interface': interface,
+             'state_path': state_path,
              'target_monitor': target_monitor}
         self.property_type = 'base'
 
@@ -35,11 +37,16 @@ class BaseEntityProperty:
             print('no name in ', self._entity_properties)
             return False
         name = self._entity_properties['name']
-        if 'interface' not in self._entity_properties:
-            print('There is no shimeji interface in {0}'.format(name))
+        if 'state_path' not in self._entity_properties:
+            print('There is no shimeji state_path in {0} property'.format(name))
+            return False
+        state_directory = self._entity_properties['state_path']
+        absolute_state_path = get_resource_path(state_directory)
+        if not os.path.isdir(absolute_state_path):
+            print('{0} does not exist'.format(state_directory))
             return False
         if 'target_monitor' not in self._entity_properties:
-            print('There is no target monitor type in {0}'.format(name))
+            print('There is no target monitor type in {0} property'.format(name))
             return False
         if self._entity_properties['target_monitor'] >= monitor_info['count']:
             print('Target monitor index {0} should be smaller than {1} in {2}'.format(
@@ -52,8 +59,8 @@ class BaseShimejiEntity:
 
     def __init__(self, entity_property: BaseEntityProperty):
         self._name = entity_property.get('name')
-        self._interface: ShimejiInterface = entity_property.get('interface')
-        self._interface.set_name(self._name)
+        state_path = entity_property.get('state_path')
+        self._interface: ShimejiInterface = ShimejiInterface(self._name, state_path)
         self.__interface_queue: CallQueue = self._interface.get_interface_queue()
 
         self._monitor_info = get_monitor_info()
@@ -90,6 +97,23 @@ class BaseShimejiEntity:
             self._interface.state_interface.size())
 
         self._change_shimeji_state(SHIMEJI_DEFAULT)
+
+    def get_name(self):
+        return self._name
+
+    def activate(self):
+        self._init_shimeji()
+        self._interface.show()
+        self._reaction_thread = threading.Thread(target=self.__react_to_input)
+        self._reaction_thread.start()
+        self._set_position(self._init_pose)
+
+    def deactivate(self):
+        self._interface.hide()
+        self._reaction_thread.join()
+
+    def close(self):
+        self._interface.close()
 
     def _process_input(self, input_data):
         event_name = input_data[0]
@@ -146,10 +170,3 @@ class BaseShimejiEntity:
             for _ in range(current_queue_size):
                 input_data: dict = queue.pop_queue()
                 self._process_input(input_data)
-
-    def activate(self):
-        self._init_shimeji()
-        self._interface.show()
-        self._reaction_thread = threading.Thread(target=self.__react_to_input)
-        self._reaction_thread.start()
-        self._set_position(self._init_pose)

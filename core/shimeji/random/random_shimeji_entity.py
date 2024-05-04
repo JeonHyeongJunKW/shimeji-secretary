@@ -51,6 +51,10 @@ class RandomShimejiEntity(BaseShimejiEntity):
         self._random_move_thread = threading.Thread(target=self._move_random)
         self._random_move_thread.start()
 
+    def deactivate(self):
+        super().deactivate()
+        self._random_move_thread.join()
+
     def _move_random(self):
         move_speed = 1  # pixel / second
         drop_speed = 3  # pixel / second

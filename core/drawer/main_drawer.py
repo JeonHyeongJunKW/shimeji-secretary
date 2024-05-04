@@ -1,17 +1,13 @@
 # Copyright 2024 Hyeongjun Jeon
 # Authors: Hyeongjun Jeon
 
-import os
-import sys
-
-from core.drawer.entity.shimeji_interface import ShimejiInterface
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
 from core.shimeji.random.random_shimeji_entity import RandomEntityProperty
 from core.system.queue.call_queue import CallQueue
 
 from PyQt5 import uic
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QApplication, QComboBox, QLineEdit
+from PyQt5.QtWidgets import QComboBox, QLineEdit
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QPushButton
 from utility.monitor import get_monitor_info
 from widget_resource.path import get_resource_path
@@ -19,8 +15,7 @@ from widget_resource.path import get_resource_path
 
 class MainDrawer(QMainWindow):
 
-    def __init__(self, shimeji_generation_queue: CallQueue):
-        self.__app = QApplication(sys.argv)
+    def __init__(self, shimeji_command_queue: CallQueue):
         super().__init__()
         resource_path = get_resource_path('mainwindow.ui')
         uic.loadUi(resource_path, self)
@@ -29,7 +24,7 @@ class MainDrawer(QMainWindow):
 
         RANDOM = 'random'
         DEFAULT = 'default'
-        self.shimeji_generation_queue = shimeji_generation_queue
+        self.shimeji_command_queue = shimeji_command_queue
 
         self.primary_monitor_index = self.__monitor_info['primary_index']
         monitor_width = self.__monitor_info['size'][self.primary_monitor_index]['width']
@@ -65,11 +60,8 @@ class MainDrawer(QMainWindow):
         self.__addition_button.clicked.connect(self.__add_shimeji)
         self.__removal_button.clicked.connect(self.__remove_shimeji)
 
-        self.__shimeji_interface_set = []
-
     def activate(self):
         self.show()
-        self.__app.exec_()
 
     def __remove_shimeji(self):
         target_shimeji_name = self.__removal_combobox.currentText()
@@ -77,11 +69,8 @@ class MainDrawer(QMainWindow):
         if target_shimeji_index == -1:
             return
 
-        for shimeji_interface in self.__shimeji_interface_set:
-            target_interface: ShimejiInterface = shimeji_interface
-            if target_interface.get_name() == target_shimeji_name:
-                target_interface.hide()
-                break
+        self.shimeji_command_queue.add_queue(['removal', target_shimeji_name])
+
         self.__removal_combobox.removeItem(target_shimeji_index)
 
     def __add_shimeji(self):
@@ -94,11 +83,6 @@ class MainDrawer(QMainWindow):
             return
 
         target_property = self.__property_combobox.currentData()
-        resource_path = 'shimeji/base.ui'
-        state_directory = 'shimeji/emoji_state'
-
-        shimeji_interface = ShimejiInterface(resource_path, state_directory)
-        self.__shimeji_interface_set.append(shimeji_interface)
 
         entity_property = None
         if target_property == RandomEntityProperty:
@@ -106,19 +90,18 @@ class MainDrawer(QMainWindow):
                 RandomEntityProperty(
                     use_random_seed=False,
                     name=shimeji_name,
-                    interface=self.__shimeji_interface_set[-1],
+                    state_path='shimeji/emoji_state',
                     target_monitor=self.primary_monitor_index)
         else:
             entity_property = \
                 BaseEntityProperty(
                     name=shimeji_name,
-                    interface=self.__shimeji_interface_set[-1],
+                    state_path='shimeji/emoji_state',
                     target_monitor=self.primary_monitor_index)
-        self.shimeji_generation_queue.add_queue(entity_property)
+
+        self.shimeji_command_queue.add_queue(['generation', entity_property])
         self.__removal_combobox.addItem(shimeji_name)
 
     def closeEvent(self, event: QCloseEvent):
-        for shimeji_interface in self.__shimeji_interface_set:
-            target_interface: ShimejiInterface = shimeji_interface
-            target_interface.hide()
+        self.shimeji_command_queue.add_queue(['close'])
         event.accept()
