@@ -33,6 +33,3 @@
     └── shimeji # 시메지의 기본 ui 및 폴더별로 타입을 가짐
         └── emoji_state # 이모지 타입의 state용 이미지를 가짐
 ```
-
-### 협업 방식
-- 무조건 Pull Request를 올려서 리뷰 받고, main에 merge함
