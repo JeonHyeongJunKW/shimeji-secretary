@@ -1,4 +1,4 @@
-# Copyright 2024 hd company
+# Copyright 2024 Hyeongjun Jeon
 # Authors: Hyeongjun Jeon
 import copy
 import subprocess
