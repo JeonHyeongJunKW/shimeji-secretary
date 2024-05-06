@@ -8,6 +8,7 @@ from core.drawer.main_drawer import MainDrawer
 from core.shimeji.base.base_shimeji_builder import BaseShimejiBuilder
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty, BaseShimejiEntity
 from core.shimeji.random.random_shimeji_builder import RandomShimejiBuilder
+from core.shimeji.dynamic.dynamic_shimeji_builder import DynamicShimejiBuilder
 from core.system.queue.call_queue import CallQueue
 
 from PyQt5.QtWidgets import QApplication
@@ -40,6 +41,7 @@ class ShimejiSecretarySystem:
         queue = self.shimeji_command_queue
         base_builder = BaseShimejiBuilder()
         random_builder = RandomShimejiBuilder()
+        dynamic_builder = DynamicShimejiBuilder()
         while True:
             with command_call:
                 command_call.wait(timeout=0.1)
@@ -62,6 +64,8 @@ class ShimejiSecretarySystem:
                     shimeji_property: BaseEntityProperty = command[1]
                     if shimeji_property.property_type == 'random':
                         entity = random_builder.make_entity(shimeji_property)
+                    elif shimeji_property.property_type == 'dynamic':
+                        entity = dynamic_builder.make_entity(shimeji_property)
                     else:
                         entity = base_builder.make_entity(shimeji_property)
 

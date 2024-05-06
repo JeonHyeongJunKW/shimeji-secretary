@@ -62,7 +62,8 @@ class BaseShimejiEntity:
         self._mouse_click_point = \
             QPoint(self._interface.size().width() / 2, self._interface.size().height() / 2)
 
-        self.__current_state: str = ''
+        self._status_lock = threading.Lock()
+        self._current_state: str = ''
 
     def _init_shimeji(self):
         load_static_shimeji_state(
@@ -107,14 +108,15 @@ class BaseShimejiEntity:
             self._set_position(target_point)
 
     def _change_shimeji_state(self, state_type):
-        if self.__current_state == state_type:
+        if self._current_state == state_type:
             return
-        self.__current_state = state_type
-        target_image: QtGui.QPixmap = \
-            get_shimeji_state(self._interface.state_namespace + self.__current_state)
+        with self._status_lock:
+            self._current_state = state_type
+            target_image: QtGui.QPixmap = \
+                get_shimeji_state(self._interface.state_namespace + self._current_state)
 
-        if target_image is not None:
-            self._interface.state_interface.setPixmap(target_image)
+            if target_image is not None:
+                self._interface.state_interface.setPixmap(target_image)
 
     def _set_position(self, position: QPoint):
         if self._monitor_roi.contains(position):

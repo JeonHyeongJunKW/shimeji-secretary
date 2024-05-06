@@ -4,6 +4,7 @@
 from core.drawer.entity.shimeji_interface import ShimejiInterface
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
 from core.shimeji.random.random_shimeji_entity import RandomEntityProperty
+from core.shimeji.dynamic.dynamic_shimeji_entity import DynamicEntityProperty
 from core.system.queue.call_queue import CallQueue
 
 from PyQt5 import uic
@@ -25,6 +26,7 @@ class MainDrawer(QMainWindow):
 
         RANDOM = 'random'
         DEFAULT = 'default'
+        DYNAMIC = 'dynamic'
         self.shimeji_command_queue = shimeji_command_queue
         self._interface_set = []
 
@@ -54,6 +56,7 @@ class MainDrawer(QMainWindow):
         self.__property_combobox: QComboBox = self.property_combobox
         self.__property_combobox.addItem(RANDOM, RandomEntityProperty)
         self.__property_combobox.addItem(DEFAULT, BaseEntityProperty)
+        self.__property_combobox.addItem(DYNAMIC, DynamicEntityProperty)
         self.__removal_combobox: QComboBox = self.removal_combobox
 
         default_index = self.__property_combobox.findText(DEFAULT)
@@ -85,25 +88,34 @@ class MainDrawer(QMainWindow):
             QMessageBox.warning(self, 'Warn', '이미 같은 이름으로 존재합니다.')
             return
 
-        target_property = self.__property_combobox.currentData()
+        target_property_type = self.__property_combobox.currentData()
 
         shimeji_resource_path = 'shimeji/emoji_state'
+        if target_property_type == DynamicEntityProperty:
+            shimeji_resource_path = 'shimeji/dynamic_state'
         entity_interface = ShimejiInterface(shimeji_name, shimeji_resource_path)
 
         # QWidget must be made in QMainWindow
         self._interface_set.append(entity_interface)
 
         entity_property = None
-        if target_property == RandomEntityProperty:
+        if target_property_type == RandomEntityProperty:
             entity_property = \
-                RandomEntityProperty(
+                target_property_type(
+                    use_random_seed=False,
+                    name=shimeji_name,
+                    interface=entity_interface,
+                    target_monitor=self.primary_monitor_index)
+        elif target_property_type == DynamicEntityProperty:
+            entity_property = \
+                target_property_type(
                     use_random_seed=False,
                     name=shimeji_name,
                     interface=entity_interface,
                     target_monitor=self.primary_monitor_index)
         else:
             entity_property = \
-                BaseEntityProperty(
+                target_property_type(
                     name=shimeji_name,
                     interface=entity_interface,
                     target_monitor=self.primary_monitor_index)

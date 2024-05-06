@@ -22,19 +22,22 @@ class RandomEntityProperty(BaseEntityProperty):
 
 
 class RandomShimejiEntity(BaseShimejiEntity):
-
+    global LEFT, RIGHT
+    LEFT = 0
+    RIGHT = 1
     def __init__(self, entity_property):
         super(RandomShimejiEntity, self).__init__(entity_property)
         self._use_random_seed = entity_property.get('use_random_seed')
 
         if self._use_random_seed:
             self._seed = 10
-        random_offset = self.get_random_x()
+        random_offset = self._get_random_x()
         origin_init_pose = copy.deepcopy(self._init_pose)
         origin_init_pose.setX(random_offset)
         if self._monitor_roi.contains(origin_init_pose):
             self._init_pose = origin_init_pose
         self.__is_mouse_handling = False
+        self._current_direction = LEFT
 
     def activate(self):
         super().activate()
@@ -80,16 +83,18 @@ class RandomShimejiEntity(BaseShimejiEntity):
             else:
                 change_target = tracking_end_time < current_time
                 if change_target:
-                    target_x = self.get_random_x()
+                    target_x = self._get_random_x()
                     tracking_end_time = current_time + change_time
 
                 move_direction = target_x - current_position.x()
                 if move_direction < 0:
                     current_position.setX(current_position.x() - move_speed)
+                    self._current_direction = LEFT
                 elif move_direction > 0:
                     current_position.setX(current_position.x() + move_speed)
+                    self._current_direction = RIGHT
                 else:
-                    target_x = self.get_random_x()
+                    target_x = self._get_random_x()
                     tracking_end_time = current_time + change_time
             self._set_position(current_position)
 
@@ -109,5 +114,5 @@ class RandomShimejiEntity(BaseShimejiEntity):
             mouse_handling = False
         self.__is_mouse_handling = mouse_handling
 
-    def get_random_x(self):
+    def _get_random_x(self):
         return int(random.random() * self._monitor_roi.width() + self._monitor_roi.x())
