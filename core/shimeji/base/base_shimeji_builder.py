@@ -1,11 +1,9 @@
 # Copyright 2024 Hyeongjun Jeon
 # Authors: Hyeongjun Jeon
 
-import os
-
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty, BaseShimejiEntity
 from utility.monitor import get_monitor_info
-from widget_resource.path import get_resource_path
+
 
 class BaseShimejiBuilder:
 
