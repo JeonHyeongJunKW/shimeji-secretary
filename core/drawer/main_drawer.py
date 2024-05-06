@@ -89,6 +89,8 @@ class MainDrawer(QMainWindow):
 
         shimeji_resource_path = 'shimeji/emoji_state'
         entity_interface = ShimejiInterface(shimeji_name, shimeji_resource_path)
+
+        # QWidget must be made in QMainWindow
         self._interface_set.append(entity_interface)
 
         entity_property = None
