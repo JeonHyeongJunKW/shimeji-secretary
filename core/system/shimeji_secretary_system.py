@@ -67,4 +67,4 @@ class ShimejiSecretarySystem:
 
                     if entity is not None:
                         self.shimeji_set.append(entity)
-                        entity.activate()
+                        self.shimeji_set[-1].activate()
