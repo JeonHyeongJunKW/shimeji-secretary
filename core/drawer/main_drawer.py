@@ -1,6 +1,7 @@
 # Copyright 2024 Hyeongjun Jeon
 # Authors: Hyeongjun Jeon
 
+from core.drawer.entity.shimeji_interface import ShimejiInterface
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
 from core.shimeji.random.random_shimeji_entity import RandomEntityProperty
 from core.system.queue.call_queue import CallQueue
@@ -25,6 +26,7 @@ class MainDrawer(QMainWindow):
         RANDOM = 'random'
         DEFAULT = 'default'
         self.shimeji_command_queue = shimeji_command_queue
+        self._interface_set = []
 
         self.primary_monitor_index = self.__monitor_info['primary_index']
         monitor_width = self.__monitor_info['size'][self.primary_monitor_index]['width']
@@ -68,6 +70,7 @@ class MainDrawer(QMainWindow):
         target_shimeji_index = self.__removal_combobox.currentIndex()
         if target_shimeji_index == -1:
             return
+        del self._interface_set[target_shimeji_index]
 
         self.shimeji_command_queue.add_queue(['removal', target_shimeji_name])
 
@@ -84,19 +87,23 @@ class MainDrawer(QMainWindow):
 
         target_property = self.__property_combobox.currentData()
 
+        shimeji_resource_path = 'shimeji/emoji_state'
+        entity_interface =  ShimejiInterface(shimeji_name, shimeji_resource_path)
+        self._interface_set.append(entity_interface)
+
         entity_property = None
         if target_property == RandomEntityProperty:
             entity_property = \
                 RandomEntityProperty(
                     use_random_seed=False,
                     name=shimeji_name,
-                    state_path='shimeji/emoji_state',
+                    interface=entity_interface,
                     target_monitor=self.primary_monitor_index)
         else:
             entity_property = \
                 BaseEntityProperty(
                     name=shimeji_name,
-                    state_path='shimeji/emoji_state',
+                    interface=entity_interface,
                     target_monitor=self.primary_monitor_index)
 
         self.shimeji_command_queue.add_queue(['generation', entity_property])

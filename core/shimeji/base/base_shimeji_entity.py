@@ -16,10 +16,10 @@ from utility.monitor import get_monitor_info
 
 class BaseEntityProperty:
 
-    def __init__(self, name, state_path, target_monitor):
+    def __init__(self, name, interface, target_monitor):
         self._entity_properties = \
             {'name': name,
-             'state_path': state_path,
+             'interface': interface,
              'target_monitor': target_monitor}
         self.property_type = 'base'
 
@@ -34,8 +34,7 @@ class BaseShimejiEntity:
 
     def __init__(self, entity_property: BaseEntityProperty):
         self._name = entity_property.get('name')
-        state_path = entity_property.get('state_path')
-        self._interface: ShimejiInterface = ShimejiInterface(self._name, state_path)
+        self._interface: ShimejiInterface = entity_property.get('interface')
         self.__interface_queue: CallQueue = self._interface.get_interface_queue()
 
         self._monitor_info = get_monitor_info()
@@ -112,7 +111,7 @@ class BaseShimejiEntity:
             return
         self.__current_state = state_type
         target_image: QtGui.QPixmap = \
-            get_shimeji_state(self._interface.state_namespace + state_type)
+            get_shimeji_state(self._interface.state_namespace + self.__current_state)
 
         if target_image is not None:
             self._interface.state_interface.setPixmap(target_image)

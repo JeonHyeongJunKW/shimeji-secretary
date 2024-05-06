@@ -18,13 +18,8 @@ class BaseShimejiBuilder:
             print('no name in property')
             return False
         name = entity_property.get('name')
-        if entity_property.get('state_path') is None:
-            print('There is no shimeji state_path in {0} property'.format(name))
-            return False
-        state_directory = entity_property.get('state_path')
-        absolute_state_path = get_resource_path(state_directory)
-        if not os.path.isdir(absolute_state_path):
-            print('{0} does not exist'.format(state_directory))
+        if entity_property.get('interface') is None:
+            print('There is no shimeji interface in {0} property'.format(name))
             return False
         if entity_property.get('target_monitor') is None:
             print('There is no target monitor type in {0} property'.format(name))
