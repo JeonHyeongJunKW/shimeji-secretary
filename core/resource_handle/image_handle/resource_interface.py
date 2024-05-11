@@ -1,14 +1,16 @@
 # Copyright 2024 Hyeongjun Jeon
 # Authors: Hyeongjun Jeon
-import cv2
-import numpy as np
 
 from core.resource_handle.resource_server import ResourceServer
+
+import cv2
+
 from PyQt5 import QtGui
 from PyQt5.QtCore import QSize, Qt
 
+
 def add_alpha_channel(image: QtGui.QImage):
-    size: QSize= image.size()
+    size: QSize = image.size()
     h = size.height()
     w = size.width()
     for i in range(h):
@@ -18,6 +20,7 @@ def add_alpha_channel(image: QtGui.QImage):
                 color.setAlpha(0)
                 image.setPixelColor(j, i, color)
 
+
 def convert_image_to_frame(image):
     image = cv2.cvtColor(image, cv2.COLOR_RGB2RGBA)
     height, width, channel = image.shape
@@ -25,6 +28,7 @@ def convert_image_to_frame(image):
     output_q_image = \
         QtGui.QImage(image.data, width, height, data_step, QtGui.QImage.Format_ARGB32)
     return output_q_image
+
 
 def load_static_shimeji_state(resource_names: list, resource_paths: list, image_size: QSize):
 
@@ -37,12 +41,9 @@ def load_static_shimeji_state(resource_names: list, resource_paths: list, image_
         ResourceServer.load_resource(resource_names[i], resource_paths[i], load_pixmap)
 
 
-def load_dynamic_shimeji_state(
-    resource_names: list,
-    resource_paths: list,
-    movie_size: QSize):
+def load_dynamic_shimeji_state(resource_names: list, resource_paths: list, git_size: QSize):
 
-    def load_gif(resource_path, size: QSize = movie_size):
+    def load_gif(resource_path, size: QSize = git_size):
         gif = cv2.VideoCapture(resource_path)
         ret, frame = gif.read()
         frame_set = []

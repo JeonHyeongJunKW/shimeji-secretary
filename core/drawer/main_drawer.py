@@ -3,8 +3,8 @@
 
 from core.drawer.entity.shimeji_interface import ShimejiInterface
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty
-from core.shimeji.random.random_shimeji_entity import RandomEntityProperty
 from core.shimeji.dynamic.dynamic_shimeji_entity import DynamicEntityProperty
+from core.shimeji.random.random_shimeji_entity import RandomEntityProperty
 from core.system.queue.call_queue import CallQueue
 
 from PyQt5 import uic

@@ -25,6 +25,7 @@ class RandomShimejiEntity(BaseShimejiEntity):
     global LEFT, RIGHT
     LEFT = 0
     RIGHT = 1
+
     def __init__(self, entity_property):
         super(RandomShimejiEntity, self).__init__(entity_property)
         self._use_random_seed = entity_property.get('use_random_seed')

@@ -5,7 +5,8 @@ import copy
 import threading
 
 from core.drawer.entity.shimeji_interface import ShimejiInterface
-from core.resource_handle.resource_interface import get_shimeji_state, load_static_shimeji_state
+from core.resource_handle.image_handle.resource_interface \
+    import get_shimeji_state, load_static_shimeji_state
 from core.resource_handle.state_type import SHIMEJI_ANGRY, SHIMEJI_DEFAULT
 from core.resource_handle.state_type import SHIMEJI_DISAPPOINTED, SHIMEJI_SMILE
 from core.system.queue.call_queue import CallQueue

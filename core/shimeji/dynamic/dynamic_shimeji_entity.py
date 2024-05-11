@@ -1,16 +1,15 @@
 # Copyright 2024 Hyeongjun Jeon
 # Authors: Hyeongjun Jeon
 
-import copy
 import threading
 import time
 
-from core.resource_handle.resource_interface import get_shimeji_state, load_dynamic_shimeji_state
+from core.resource_handle.image_handle.resource_interface \
+    import get_shimeji_state, load_dynamic_shimeji_state
 from core.resource_handle.state_type import SHIMEJI_DEFAULT
 from core.shimeji.random.random_shimeji_entity import RandomEntityProperty, RandomShimejiEntity
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QPoint
 
 
 class DynamicEntityProperty(RandomEntityProperty):

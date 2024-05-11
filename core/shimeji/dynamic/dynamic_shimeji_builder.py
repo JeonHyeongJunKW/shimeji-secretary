@@ -1,8 +1,8 @@
 # Copyright 2024 Hyeongjun Jeon
 # Authors: Hyeongjun Jeon
 
-from core.shimeji.random.random_shimeji_builder import RandomShimejiBuilder
 from core.shimeji.dynamic.dynamic_shimeji_entity import DynamicEntityProperty, DynamicShimejiEntity
+from core.shimeji.random.random_shimeji_builder import RandomShimejiBuilder
 
 
 class DynamicShimejiBuilder(RandomShimejiBuilder):

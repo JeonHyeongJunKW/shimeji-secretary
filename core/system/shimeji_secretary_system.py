@@ -7,8 +7,8 @@ import threading
 from core.drawer.main_drawer import MainDrawer
 from core.shimeji.base.base_shimeji_builder import BaseShimejiBuilder
 from core.shimeji.base.base_shimeji_entity import BaseEntityProperty, BaseShimejiEntity
-from core.shimeji.random.random_shimeji_builder import RandomShimejiBuilder
 from core.shimeji.dynamic.dynamic_shimeji_builder import DynamicShimejiBuilder
+from core.shimeji.random.random_shimeji_builder import RandomShimejiBuilder
 from core.system.queue.call_queue import CallQueue
 
 from PyQt5.QtWidgets import QApplication
@@ -69,7 +69,7 @@ class ShimejiSecretarySystem:
                     else:
                         entity = base_builder.make_entity(shimeji_property)
 
-                    speak_option = command[2]
+                    # speak_option = command[2]
 
                     if entity is not None:
                         self.shimeji_set.append(entity)
