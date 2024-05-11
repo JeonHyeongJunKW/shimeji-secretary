@@ -92,7 +92,7 @@
      <number>3</number>
     </property>
    </widget>
-   <widget class="QCheckBox" name="option_1_checkbox">
+   <widget class="QCheckBox" name="speak_checkbox">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -102,20 +102,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>옵션 1</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="option_2_checkbox">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>141</y>
-      <width>87</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>옵션 2</string>
+     <string>말하기</string>
     </property>
    </widget>
    <widget class="QComboBox" name="removal_combobox">

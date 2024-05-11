@@ -69,6 +69,8 @@ class ShimejiSecretarySystem:
                     else:
                         entity = base_builder.make_entity(shimeji_property)
 
+                    speak_option = command[2]
+
                     if entity is not None:
                         self.shimeji_set.append(entity)
                         self.shimeji_set[-1].activate()

@@ -9,7 +9,7 @@ from core.system.queue.call_queue import CallQueue
 
 from PyQt5 import uic
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QComboBox, QLineEdit
+from PyQt5.QtWidgets import QCheckBox, QComboBox, QLineEdit
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QPushButton
 from utility.monitor import get_monitor_info
 from widget_resource.path import get_resource_path
@@ -64,6 +64,7 @@ class MainDrawer(QMainWindow):
 
         self.__addition_button.clicked.connect(self.__add_shimeji)
         self.__removal_button.clicked.connect(self.__remove_shimeji)
+        self.__speak_checkbox: QCheckBox = self.speak_checkbox
 
     def activate(self):
         self.show()
@@ -89,6 +90,7 @@ class MainDrawer(QMainWindow):
             return
 
         target_property_type = self.__property_combobox.currentData()
+        speak_option = self.__speak_checkbox.isChecked()
 
         shimeji_resource_path = 'shimeji/emoji_state'
         if target_property_type == DynamicEntityProperty:
@@ -120,7 +122,7 @@ class MainDrawer(QMainWindow):
                     interface=entity_interface,
                     target_monitor=self.primary_monitor_index)
 
-        self.shimeji_command_queue.add_queue(['generation', entity_property])
+        self.shimeji_command_queue.add_queue(['generation', entity_property, speak_option])
         self.__removal_combobox.addItem(shimeji_name)
 
     def closeEvent(self, event: QCloseEvent):
