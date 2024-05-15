@@ -13,11 +13,11 @@ class ResourceServer:
     def __init__(self):
         pass
 
-    def load_resource(resource_name: str, resource_data: list, load_method: Callable):
+    def load_resource(resource_name: str, resource_info: list, load_method: Callable):
         is_exist: bool = ResourceServer.check_resource(resource_name)
         if not is_exist:
             with resource_lock:
-                resource_data[resource_name] = load_method(resource_data)
+                resource_data[resource_name] = load_method(resource_info)
 
     def get_resource(resource_name: str):
         is_exist: bool = ResourceServer.check_resource(resource_name)

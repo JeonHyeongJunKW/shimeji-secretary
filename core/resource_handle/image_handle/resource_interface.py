@@ -32,9 +32,9 @@ def convert_image_to_frame(image):
 
 def load_static_shimeji_state(resource_names: list, resource_paths: list, image_size: QSize):
 
-    def load_pixmap(resource_data: list):
-        resource_path: str = resource_data[0]
-        target_size: QSize = resource_data[1]
+    def load_pixmap(resource_info: list):
+        resource_path: str = resource_info[0]
+        target_size: QSize = resource_info[1]
         pixmap = QtGui.QPixmap(resource_path)
         pixmap = pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         return pixmap
@@ -48,10 +48,10 @@ def load_static_shimeji_state(resource_names: list, resource_paths: list, image_
 
 def load_dynamic_shimeji_state(resource_names: list, resource_paths: list, gif_size: QSize):
 
-    def load_gif(resource_data: list):
-        resource_path: str = resource_data[0]
-        target_size: QSize = resource_data[1]
-        gif = cv2.VideoCapture(resource_path[0])
+    def load_gif(resource_info: list):
+        resource_path: str = resource_info[0]
+        target_size: QSize = resource_info[1]
+        gif = cv2.VideoCapture(resource_path)
         ret, frame = gif.read()
         frame_set = []
         while ret:
