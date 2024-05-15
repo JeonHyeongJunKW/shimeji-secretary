@@ -32,32 +32,40 @@ def convert_image_to_frame(image):
 
 def load_static_shimeji_state(resource_names: list, resource_paths: list, image_size: QSize):
 
-    def load_pixmap(resource_path, size: QSize = image_size):
+    def load_pixmap(resource_data: list):
+        resource_path: str = resource_data[0]
+        target_size: QSize = resource_data[1]
         pixmap = QtGui.QPixmap(resource_path)
-        pixmap = pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         return pixmap
 
     for i in range(len(resource_names)):
-        ResourceServer.load_resource(resource_names[i], resource_paths[i], load_pixmap)
+        ResourceServer.load_resource(
+            resource_names[i],
+            [resource_paths[i], image_size],
+            load_pixmap)
 
 
-def load_dynamic_shimeji_state(resource_names: list, resource_paths: list, git_size: QSize):
+def load_dynamic_shimeji_state(resource_names: list, resource_paths: list, gif_size: QSize):
 
-    def load_gif(resource_path, size: QSize = git_size):
-        gif = cv2.VideoCapture(resource_path)
+    def load_gif(resource_data: list):
+        resource_path: str = resource_data[0]
+        target_size: QSize = resource_data[1]
+        gif = cv2.VideoCapture(resource_path[0])
         ret, frame = gif.read()
         frame_set = []
         while ret:
             output_image = convert_image_to_frame(frame)
             add_alpha_channel(output_image)
             output_pixmap = QtGui.QPixmap(output_image)
-            output_pixmap = output_pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            output_pixmap = \
+                output_pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             frame_set.append(output_pixmap)
             ret, frame = gif.read()
         return frame_set
 
     for i in range(len(resource_names)):
-        ResourceServer.load_resource(resource_names[i], resource_paths[i], load_gif)
+        ResourceServer.load_resource(resource_names[i], [resource_paths[i], gif_size], load_gif)
 
 
 def get_shimeji_state(state_name: str):
